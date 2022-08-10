@@ -9,10 +9,16 @@ import re
 import shutil
 import os
 import glob
-from gff_longest_transcript import find_longest_transcript
 import gzip
 from pathlib import Path
 import subprocess
+
+try:
+    from gff_longest_transcript import find_longest_transcript
+    is_longest_trancript_generated = True
+except ImportError:
+    is_longest_trancript_generated = False
+    print("gff_longest_transcript.py not found. Bed file with longest transcript per each gene will not be created...")
 
 
 def url_exist(url):
@@ -153,7 +159,10 @@ def download_genome(genome, path):
     #
     download_file("http://hgdownload.cse.ucsc.edu/goldenPath/{genome}/bigZips/genes/{genome}.refGene.gtf.gz".format(genome=genome), dest=os.path.join(path, "{genome}.refGene.gtf.gz".format(genome=genome)))
     print("Creating annotation file from {gtf}...".format(gtf=os.path.join(path, "{genome}.refGene.gtf.gz".format(genome=genome))))
-    find_longest_transcript(os.path.join(path, "{genome}.refGene.gtf.gz".format(genome=genome)), os.path.join(path, "{genome}/annotation/refGene.bed".format(genome=genome)), clip_start=50, clip_strand_specific=True)
+
+    if is_longest_trancript_generated:
+        find_longest_transcript(os.path.join(path, "{genome}.refGene.gtf.gz".format(genome=genome)), os.path.join(path, "{genome}/annotation/refGene.bed".format(genome=genome)), clip_start=50, clip_strand_specific=True)
+
 
 
 if __name__ == "__main__":
