@@ -156,7 +156,8 @@ def download_genome(genome, path):
 
     download_file("http://hgdownload.cse.ucsc.edu/goldenPath/{genome}/bigZips/{genome}.chrom.sizes".format(genome=genome), dest=os.path.join(path, "{genome}/annotation/{genome}.chrom.sizes".format(genome=genome)))
     download_bowtie2_index("https://genome-idx.s3.amazonaws.com/bt/{genome}.zip".format(genome=genome), genome=genome, dest=path)
-    #
+
+    download_file("http://hgdownload.cse.ucsc.edu/goldenPath/{genome}/bigZips/genes/{genome}.ncbiRefSeq.gtf.gz".format(genome=genome), dest=os.path.join(path, "{genome}.refGene.gtf.gz".format(genome=genome)))
     download_file("http://hgdownload.cse.ucsc.edu/goldenPath/{genome}/bigZips/genes/{genome}.refGene.gtf.gz".format(genome=genome), dest=os.path.join(path, "{genome}.refGene.gtf.gz".format(genome=genome)))
     print("Creating annotation file from {gtf}...".format(gtf=os.path.join(path, "{genome}.refGene.gtf.gz".format(genome=genome))))
 
