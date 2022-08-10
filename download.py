@@ -155,11 +155,11 @@ def download_genome(genome, path):
     build_fasta_index("{genome}/{genome}.fa".format(genome=genome))
 
     download_file("http://hgdownload.cse.ucsc.edu/goldenPath/{genome}/bigZips/{genome}.chrom.sizes".format(genome=genome), dest=os.path.join(path, "{genome}/annotation/{genome}.chrom.sizes".format(genome=genome)))
-    download_bowtie2_index("https://genome-idx.s3.amazonaws.com/bt/{genome}.zip".format(genome=genome), genome=genome, dest=path)
+    download_bowtie2_index("https://genome-idx.s3.amazonaws.com/bt/{genome}.zip".format(genome=genome), genome=genome, dest=os.path.join(path, genome))
 
-    download_file("http://hgdownload.cse.ucsc.edu/goldenPath/{genome}/bigZips/genes/{genome}.ncbiRefSeq.gtf.gz".format(genome=genome), dest=os.path.join(path, "{genome}.ncbiRefSeq.gtf.gz".format(genome=genome)))
-    download_file("http://hgdownload.cse.ucsc.edu/goldenPath/{genome}/bigZips/genes/{genome}.refGene.gtf.gz".format(genome=genome), dest=os.path.join(path, "{genome}.refGene.gtf.gz".format(genome=genome)))
-    print("Creating annotation file from {gtf}...".format(gtf=os.path.join(path, "{genome}.refGene.gtf.gz".format(genome=genome))))
+    download_file("http://hgdownload.cse.ucsc.edu/goldenPath/{genome}/bigZips/genes/{genome}.ncbiRefSeq.gtf.gz".format(genome=genome), dest=os.path.join(path, "{genome}/annotation/{genome}.ncbiRefSeq.gtf.gz".format(genome=genome)))
+    download_file("http://hgdownload.cse.ucsc.edu/goldenPath/{genome}/bigZips/genes/{genome}.refGene.gtf.gz".format(genome=genome), dest=os.path.join(path, "{genome}/annotation/{genome}.refGene.gtf.gz".format(genome=genome)))
+    print("Creating annotation file from {gtf}...".format(gtf=os.path.join(path, "{genome}/annotation/{genome}.refGene.gtf.gz".format(genome=genome))))
 
     if is_longest_trancript_generated:
         find_longest_transcript(os.path.join(path, "{genome}.refGene.gtf.gz".format(genome=genome)), os.path.join(path, "{genome}/annotation/refGene.bed".format(genome=genome)), clip_start=50, clip_strand_specific=True)
