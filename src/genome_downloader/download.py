@@ -14,7 +14,7 @@ from pathlib import Path
 import subprocess
 
 try:
-    from gff_longest_transcript import find_longest_transcript
+    from genome_downloader.gff_longest_transcript import find_longest_transcript
     is_longest_trancript_generated = True
 except ImportError:
     is_longest_trancript_generated = False
@@ -152,7 +152,7 @@ def download_genome(genome, path):
     else:
         raise FileExistsError("chromFa.tar.gz url couldn't be accessed")
 
-    build_fasta_index("{genome}/{genome}.fa".format(genome=genome))
+    build_fasta_index(os.path.join(path, "{genome}/{genome}.fa").format(genome=genome))
 
     download_file("http://hgdownload.cse.ucsc.edu/goldenPath/{genome}/bigZips/{genome}.chrom.sizes".format(genome=genome), dest=os.path.join(path, "{genome}/annotation/{genome}.chrom.sizes".format(genome=genome)))
     download_bowtie2_index("https://genome-idx.s3.amazonaws.com/bt/{genome}.zip".format(genome=genome), genome=genome, dest=os.path.join(path, genome))
@@ -162,11 +162,9 @@ def download_genome(genome, path):
     print("Creating annotation file from {gtf}...".format(gtf=os.path.join(path, "{genome}/annotation/{genome}.refGene.gtf.gz".format(genome=genome))))
 
     if is_longest_trancript_generated:
-        find_longest_transcript(os.path.join(path, "{genome}.refGene.gtf.gz".format(genome=genome)), os.path.join(path, "{genome}/annotation/refGene.bed".format(genome=genome)), clip_start=50, clip_strand_specific=True)
+        find_longest_transcript(os.path.join(path, "{genome}/annotation/{genome}.refGene.gtf.gz".format(genome=genome)), os.path.join(path, "{genome}/annotation/refGene.bed".format(genome=genome)), clip_start=50, clip_strand_specific=True)
 
-
-
-if __name__ == "__main__":
+def cli():
     parser = argparse.ArgumentParser(description='Download groseq dependencies')
     parser.add_argument('data', choices=['mm9', 'mm10', 'hg19'], help="""Should be one of the following: \n
     mm9 - mm9 model files\n  
@@ -181,3 +179,6 @@ if __name__ == "__main__":
         os.makedirs(args.path)
 
     download_genome(args.data, args.path)
+
+if __name__ == '__main__':
+    cli()
